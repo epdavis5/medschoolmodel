@@ -23,13 +23,13 @@ if uploaded_file:
     st.write("Preview of uploaded data:", data.head())
 
     # Predict using the model
-    probabilities = model.predict_proba(data)[:, 1]  # Get probability of enrollment
+probabilities = model.predict_proba(data)[:, 1]  # Get probability of enrollment
 data["Enrollment Probability (%)"] = (probabilities * 100).round(2)  # Convert to percentage
 
     # Show results
 st.write("Predictions:", data)
 
     # Allow download of predictions
-    csv = data.to_csv(index=False).encode("utf-8")
-    st.download_button("Download Predictions", csv, "predictions.csv", "text/csv")
+csv = data.to_csv(index=False).encode("utf-8")
+st.download_button("Download Predictions", csv, "predictions.csv", "text/csv")
 
