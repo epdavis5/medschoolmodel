@@ -30,7 +30,7 @@ categorical_cols = ['fap_yes_no', 'sex', 'URM', 'citizenship_country_code',
                         'hispanic_ethnicity_yes_no', 'first_generation_yes_no', 'Rural']
 
     # Ensure categorical columns are encoded before prediction
-    for col in categorical_cols:
+for col in categorical_cols:
         if col in data.columns:
             data[col] = data[col].astype(str)  # Convert to string to avoid dtype errors
             if col in label_encoders:
