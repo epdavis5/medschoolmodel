@@ -27,7 +27,7 @@ if uploaded_file:
 data["Enrollment Probability (%)"] = (probabilities * 100).round(2)  # Convert to percentage
 
     # Show results
-    st.write("Predictions:", data)
+st.write("Predictions:", data)
 
     # Allow download of predictions
     csv = data.to_csv(index=False).encode("utf-8")
