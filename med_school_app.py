@@ -22,6 +22,11 @@ if uploaded_file:
     # Ensure data format is correct
     st.write("Preview of uploaded data:", data.head())
 
+# Define categorical columns (these must match the training data)
+categorical_cols = ['fap_yes_no', 'sex', 'URM', 'citizenship_country_code', 
+                    'perm_state', 'residency_state_code', 'race_full_desc', 
+                    'hispanic_ethnicity_yes_no', 'first_generation_yes_no', 'Rural']
+
 # Ensure all categorical columns are label-encoded before prediction
 for col in categorical_cols:
     if col in data.columns:
