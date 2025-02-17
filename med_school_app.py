@@ -46,4 +46,33 @@ if data is not None:
     # Ensure categorical columns are encoded before prediction
     for col in categorical_cols:
         if col in data.columns:
-            data[col] = data[col].astype(str)  # Convert to string to avoid dtyp
+            data[col] = data[col].astype(str)  # Convert to string to avoid dtype errors
+            if col in label_encoders:
+                data[col] = label_encoders[col].transform(data[col])  # Apply label encoding
+            else:
+                st.warning(f"⚠️ Warning: No encoder found for column {col}, skipping encoding.")
+
+    # Debugging: Show data types before prediction
+    st.write("🛠️ Data format before prediction:")
+    st.write(data.dtypes)
+
+    # Ensure all necessary columns exist
+    expected_features = model.feature_names_in_  # Get feature names used during training
+    missing_features = [col for col in expected_features if col not in data.columns]
+    if missing_features:
+        st.error(f"❌ The following required columns are missing: {missing_features}")
+    else:
+        # Predict probabilities instead of binary 0/1
+        try:
+            probabilities = model.predict_proba(data)[:, 1]  # Get probability of enrollment
+            data["Enrollment Probability (%)"] = (probabilities * 100).round(2)  # Convert to %
+
+            # Show predictions
+            st.write("🔮 Predictions:")
+            st.write(data)
+
+            # Allow user to download the predictions
+            csv = data.to_csv(index=False).encode("utf-8")
+            st.download_button("📥 Download Predictions", csv, "predictions.csv", "text/csv")
+        except Exception as e:
+            st.error(f"❌ Prediction error: {e}")
