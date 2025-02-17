@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import numpy as np
 
 # Load the trained model
 model = joblib.load("med_school_model.pkl")
@@ -47,8 +48,18 @@ if data is not None:
     for col in categorical_cols:
         if col in data.columns:
             data[col] = data[col].astype(str)  # Convert to string to avoid dtype errors
+            
             if col in label_encoders:
-                data[col] = label_encoders[col].transform(data[col])  # Apply label encoding
+                # Handle unseen labels by assigning "Unknown" (or most frequent label)
+                known_classes = list(label_encoders[col].classes_)  # Get known labels
+                data[col] = data[col].apply(lambda x: x if x in known_classes else "Unknown")  # Replace unknowns
+                
+                # Update label encoder to include "Unknown"
+                if "Unknown" not in known_classes:
+                    label_encoders[col].classes_ = np.append(label_encoders[col].classes_, "Unknown")
+                
+                # Apply label encoding
+                data[col] = label_encoders[col].transform(data[col])
             else:
                 st.warning(f"⚠️ Warning: No encoder found for column {col}, skipping encoding.")
 
