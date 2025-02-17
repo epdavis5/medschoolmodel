@@ -22,7 +22,14 @@ if uploaded_file:
     # Ensure data format is correct
     st.write("Preview of uploaded data:", data.head())
 
+# Ensure all categorical columns are label-encoded before prediction
+for col in categorical_cols:
+    if col in data.columns:
+        data[col] = data[col].astype(str)  # Convert to string to avoid dtype errors
+        data[col] = label_encoders[col].transform(data[col])  # Apply label encoding
+
     # Predict using the model
+st.write("Data format being used for prediction:", data.dtypes)
 probabilities = model.predict_proba(data)[:, 1]  # Get probability of enrollment
 data["Enrollment Probability (%)"] = (probabilities * 100).round(2)  # Convert to percentage
 
