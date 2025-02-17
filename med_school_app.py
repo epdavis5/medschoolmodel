@@ -23,8 +23,8 @@ if uploaded_file:
     st.write("Preview of uploaded data:", data.head())
 
     # Predict using the model
-    predictions = model.predict(data)
-    data["Predicted Enrollment"] = predictions
+    probabilities = model.predict_proba(data)[:, 1]  # Get probability of enrollment
+data["Enrollment Probability (%)"] = (probabilities * 100).round(2)  # Convert to percentage
 
     # Show results
     st.write("Predictions:", data)
