@@ -14,12 +14,23 @@ st.title("🎓 Med School Enrollment Predictor 🚀")
 # File uploader
 uploaded_file = st.file_uploader("📂 Upload an Excel or CSV file", type=["csv", "xlsx"])
 
-if uploaded_file:
-    # Read uploaded file
-    if uploaded_file.name.endswith(".csv"):
-        data = pd.read_csv(uploaded_file)
-    else:
-        data = pd.read_excel(uploaded_file)
+if uploaded_file is not None:
+    try:
+        if uploaded_file.name.endswith(".csv"):
+            data = pd.read_csv(uploaded_file)
+        else:
+            data = pd.read_excel(uploaded_file)
+
+        # Ensure file is not empty
+        if data.empty:
+            st.error("❌ The uploaded file is empty. Please upload a valid dataset.")
+        else:
+            # Proceed with processing only if the data is valid
+            st.write("📊 Preview of uploaded data:", data.head())
+    except Exception as e:
+        st.error(f"❌ Error reading file: {e}")
+        data = None
+
 
     # Show preview of uploaded data
 st.write("📊 Preview of uploaded data:", data.head())
